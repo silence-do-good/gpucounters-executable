@@ -68,7 +68,7 @@ ANDROID_LDFLAGS += -L$(NDK_HOME)/sources/cxx-stl/llvm-libc++/libs/arm64-v8a
 ANDROID_LDFLAGS += -lgcc -lc++_static -lc++abi -llog
 LDFLAGS += $(ANDROID_LDFLAGS)
 
-all: out/example
+all: out/gpuCountersExecutable
 
 clean:
 	rm -rf out
@@ -82,11 +82,11 @@ out/%.o: %.cc outdir
 	@$(CXX) -o $@ -c $(CFLAGS) $<
 
 # Link executable
-out/example: out/dummyExecutable.o
+out/gpuCountersExecutable: out/gpuCountersExecutable.o
 	@echo LNK $@
-	@$(LNK) out/dummyExecutable.o $(LDFLAGS) -o $@
+	@$(LNK) $< $(LDFLAGS) -o $@
 
-test: out/example
+test: all
 	adb root
 	echo '$(TEST_CFG)' | adb shell perfetto --txt -c - -o /data/misc/perfetto-traces/trace.perfetto --background
 
